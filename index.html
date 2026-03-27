@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Palabra del Día</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom, #6dd5fa, #ffffff);
+  text-align: center;
+  padding: 20px;
+  transition: 0.3s;
+}
+
+.dark {
+  background: #121212;
+  color: white;
+}
+
+h1 { margin-bottom: 10px; }
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  max-width: 500px;
+  margin: auto;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.dark .card {
+  background: #1e1e1e;
+}
+
+.verse {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.reflection {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+img {
+  width: 100%;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
+
+button {
+  padding: 10px 15px;
+  margin: 5px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #007BFF;
+  color: white;
+  font-size: 14px;
+}
+
+button:hover { background: #0056b3; }
+
+.footer {
+  margin-top: 20px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📖 Palabra del Día</h1>
+
+<div class="card">
+
+<img id="image" src="https://source.unsplash.com/500x300/?sky,nature" />
+
+<div id="verse" class="verse"></div>
+<div id="reflection" class="reflection"></div>
+
+<button onclick="nextVerse()">🔁 Otra</button>
+<button onclick="shareWhatsApp()">📲 WhatsApp</button>
+<button onclick="toggleDark()">🌙 Modo</button>
+
+</div>
+
+<div class="footer">
+✨ Comparte esperanza cada día
+</div>
+
+<script>
+
+const images = [
+"https://source.unsplash.com/500x300/?sky",
+"https://source.unsplash.com/500x300/?nature",
+"https://source.unsplash.com/500x300/?sunrise",
+"https://source.unsplash.com/500x300/?clouds"
+];
+
+const data = [
+{verse:"Filipenses 4:13 - Todo lo puedo en aquel que me fortalece.",reflection:"Dios te da la fuerza que necesitas hoy."},
+{verse:"Salmo 23:1 - El Señor es mi pastor; nada me faltará.",reflection:"Confía, Dios provee en todo momento."},
+{verse:"Jeremías 29:11 - Tengo planes de bien para ti.",reflection:"Tu futuro está en manos de Dios."},
+{verse:"Salmo 46:1 - Dios es nuestro refugio.",reflection:"En Él siempre hay protección."},
+{verse:"Salmo 55:22 - Echa tu carga sobre el Señor.",reflection:"No cargues solo, Dios te sostiene."},
+{verse:"Proverbios 3:5 - Confía en el Señor.",reflection:"No necesitas entender todo, solo confiar."},
+{verse:"Isaías 41:10 - No temas, yo estoy contigo.",reflection:"Dios nunca te abandona."},
+{verse:"Mateo 11:28 - Ven a mí y descansa.",reflection:"Dios quiere darte paz."},
+{verse:"Romanos 8:28 - Todo ayuda para bien.",reflection:"Incluso lo difícil tiene propósito."},
+{verse:"Salmo 34:4 - Él me libró de mis temores.",reflection:"Dios trae libertad a tu vida."},
+
+{verse:"Juan 16:33 - En mí tendrás paz.",reflection:"La paz verdadera viene de Dios."},
+{verse:"Salmo 37:5 - Encomienda tu camino.",reflection:"Dios guiará cada paso."},
+{verse:"2 Corintios 5:7 - Caminamos por fe.",reflection:"Confía aunque no veas."},
+{verse:"Salmo 91:1 - El que habita al abrigo.",reflection:"Dios es tu refugio seguro."},
+{verse:"Hebreos 11:1 - La fe es certeza.",reflection:"Cree incluso sin ver resultados."},
+{verse:"Josué 1:9 - Sé fuerte y valiente.",reflection:"Dios está contigo en cada batalla."},
+{verse:"Salmo 121:1 - Mi ayuda viene del Señor.",reflection:"Nunca estás solo."},
+{verse:"Romanos 12:12 - Goza en la esperanza.",reflection:"Mantente firme en la fe."},
+{verse:"Isaías 40:31 - Nuevas fuerzas tendrán.",reflection:"Dios renueva tu energía."},
+{verse:"Efesios 6:10 - Fortalécete en el Señor.",reflection:"Tu fuerza viene de Dios."},
+
+{verse:"Salmo 27:1 - El Señor es mi luz.",reflection:"No hay oscuridad con Dios."},
+{verse:"Juan 14:27 - Mi paz os dejo.",reflection:"La paz de Dios supera todo."},
+{verse:"Salmo 118:24 - Este es el día.",reflection:"Hoy es una bendición."},
+{verse:"Proverbios 16:3 - Pon en manos de Dios.",reflection:"Dios bendice tus planes."},
+{verse:"Mateo 6:33 - Busca primero a Dios.",reflection:"Lo demás vendrá."},
+{verse:"Salmo 30:5 - El llanto dura una noche.",reflection:"La alegría llegará."},
+{verse:"1 Pedro 5:7 - Deja tus cargas.",reflection:"Dios cuida de ti."},
+{verse:"Salmo 62:1 - En Dios está mi descanso.",reflection:"Tu alma puede descansar."},
+{verse:"Isaías 26:3 - Paz perfecta.",reflection:"Confía y tendrás calma."},
+{verse:"Romanos 15:13 - Dios de esperanza.",reflection:"Llena tu corazón de fe."},
+
+{verse:"Salmo 19:14 - Sean gratos mis pensamientos.",reflection:"Cuida tu mente con Dios."},
+{verse:"Colosenses 3:23 - Haz todo para Dios.",reflection:"Tu esfuerzo tiene propósito."},
+{verse:"Mateo 7:7 - Pide y se te dará.",reflection:"Dios escucha tus oraciones."},
+{verse:"Salmo 145:18 - Cercano está Dios.",reflection:"Dios está contigo ahora."},
+{verse:"Isaías 43:2 - No te ahogarás.",reflection:"Dios te protege en pruebas."},
+{verse:"Salmo 138:8 - Dios cumplirá su propósito.",reflection:"Tu vida tiene plan divino."},
+{verse:"Hebreos 13:5 - No te dejaré.",reflection:"Dios siempre permanece."},
+{verse:"Salmo 56:3 - En el día que temo.",reflection:"Confía en Dios siempre."},
+{verse:"Juan 10:10 - Vida en abundancia.",reflection:"Dios quiere lo mejor para ti."},
+{verse:"Salmo 9:9 - Refugio en angustia.",reflection:"Corre a Dios en dificultades."},
+
+{verse:"Proverbios 18:10 - Torre fuerte es Dios.",reflection:"Él es tu protección."},
+{verse:"Salmo 37:4 - Deléitate en Dios.",reflection:"Él concede deseos correctos."},
+{verse:"Mateo 5:14 - Luz del mundo.",reflection:"Brilla con fe."},
+{verse:"Salmo 100:5 - Dios es bueno.",reflection:"Su amor es eterno."},
+{verse:"Romanos 5:5 - Amor de Dios.",reflection:"Nunca te faltará amor."},
+{verse:"Isaías 12:2 - Dios es mi salvación.",reflection:"Confía sin miedo."},
+{verse:"Salmo 66:20 - Dios escucha.",reflection:"Tus oraciones llegan."},
+{verse:"Efesios 2:8 - Por gracia.",reflection:"Dios te ama sin condiciones."},
+{verse:"Salmo 103:2 - No olvides sus beneficios.",reflection:"Agradece cada día."},
+{verse:"Juan 8:12 - Luz de vida.",reflection:"Sigue a Dios y no caerás."},
+
+{verse:"Salmo 119:105 - Lámpara es tu palabra.",reflection:"Dios guía tu camino."},
+{verse:"Proverbios 4:23 - Guarda tu corazón.",reflection:"Cuida lo que sientes."},
+{verse:"Mateo 19:26 - Todo es posible.",reflection:"Con Dios no hay límites."},
+{verse:"Salmo 84:11 - Dios es sol y escudo.",reflection:"Protección y bendición."},
+{verse:"Romanos 6:23 - Vida eterna.",reflection:"Dios da vida verdadera."},
+{verse:"Isaías 55:8 - Pensamientos de Dios.",reflection:"Confía en su sabiduría."},
+{verse:"Salmo 16:8 - Siempre está delante.",reflection:"Dios nunca se va."},
+{verse:"Juan 3:16 - Amor eterno.",reflection:"Eres amado profundamente."},
+{verse:"Salmo 27:14 - Espera en Dios.",reflection:"La paciencia trae bendición."},
+{verse:"Efesios 3:20 - Más de lo que pides.",reflection:"Dios sorprende."},
+
+{verse:"Salmo 119:11 - Guarda su palabra.",reflection:"Fortalece tu fe."},
+{verse:"Proverbios 2:6 - Sabiduría de Dios.",reflection:"Dios guía tus decisiones."},
+{verse:"Mateo 28:20 - Siempre contigo.",reflection:"Nunca estás solo."},
+{verse:"Salmo 40:1 - Esperé en Dios.",reflection:"Dios responde."},
+{verse:"Romanos 10:9 - Confiesa y cree.",reflection:"Salvación está cerca."},
+{verse:"Isaías 30:21 - Este es el camino.",reflection:"Dios te guía."},
+{verse:"Salmo 34:8 - Prueba a Dios.",reflection:"Verás su bondad."},
+{verse:"Juan 15:5 - Permanece en mí.",reflection:"Con Dios das fruto."},
+{verse:"Salmo 31:24 - Esfuérzate.",reflection:"Dios fortalece tu corazón."},
+{verse:"Efesios 4:32 - Sé bondadoso.",reflection:"Refleja el amor de Dios."}
+// (puedes pegar aquí las 100 frases completas que ya te di)
+];
+
+function getDailyIndex() {
+  const today = new Date();
+  const start = new Date(today.getFullYear(), 0, 0);
+  const diff = today - start;
+  const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+  return day % data.length;
+}
+
+function loadDaily() {
+  const index = getDailyIndex();
+  showContent(index);
+}
+
+function showContent(i) {
+  document.getElementById("verse").innerText = data[i].verse;
+  document.getElementById("reflection").innerText = data[i].reflection;
+
+  const img = images[Math.floor(Math.random()*images.length)];
+  document.getElementById("image").src = img;
+}
+
+function nextVerse() {
+  const random = Math.floor(Math.random() * data.length);
+  showContent(random);
+}
+
+function shareWhatsApp() {
+  const text = document.getElementById("verse").innerText + " " +
+               document.getElementById("reflection").innerText;
+
+  const url = "https://wa.me/?text=" + encodeURIComponent(text);
+  window.open(url, "_blank");
+}
+
+function toggleDark() {
+  document.body.classList.toggle("dark");
+}
+
+loadDaily();
+
+</script>
+
+</body>
+</html>
